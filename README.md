@@ -64,5 +64,3 @@ link to any project dependencies (e.g. 3rd party APIs, libraries, linter, etc).
 
 1. Create React App
 2. Axios
-
-
