@@ -82,7 +82,7 @@ const createLog = (req, res) => {
 
   db.query(sql, log, (err, results) => {
     err ? res.status(500).json({ error: err.message })
-      : res.status(201).send({ results });
+      : res.status(201).send('log has been created');
   });
 };
 const deleteLogById = (req, res) => {
@@ -136,7 +136,7 @@ const updateLogById = (req, res) => {
 
     db.query(sql, [...values, id], (err, results) => {
       err ? res.status(500).json({ error: err.message })
-        : res.status(200).json('log has been created');
+        : res.status(200).json('log has been updated');
     });
   }
 };
