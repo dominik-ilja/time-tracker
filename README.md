@@ -27,8 +27,8 @@ I expect creating a timer might pose a challenge. More specifically, tracking th
 ## Feature List
 1. List of the apps functionality
 
-## Entity Relationship Diagram (SQL only)
-1. diagram of the database tables, schemas, and relations. You can draw them by hand or try on of these useful links for ERDs
+## Entity Relationship Diagram
+![ERD Diagram](.readme/erds/erd-diagram-categories-and-logs.png)
 
 ## API Endpoint Documentations
 1. list of all of your servers routes, the structure of requests that you expect and the structure of responses they send.
