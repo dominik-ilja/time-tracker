@@ -27,11 +27,313 @@ I expect creating a timer might pose a challenge. More specifically, tracking th
 ## Feature List
 1. List of the apps functionality
 
-## Entity Relationship Diagram (SQL only)
-1. diagram of the database tables, schemas, and relations. You can draw them by hand or try on of these useful links for ERDs
+## Entity Relationship Diagram
+![ERD Diagram](.readme/erds/erd-categories-and-logs.png)
 
-## API Endpoint Documentations
-1. list of all of your servers routes, the structure of requests that you expect and the structure of responses they send.
+## API Endpoint Documentation
+
+### Get All Categories
+To retrieve all the categories make a `get` request to `https://ilja-time-tracker.herokuapp.com/api/categories`.
+
+```js
+// Route
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories')
+
+// Response
+"results": [
+  {
+    "id": 4,
+    "title": "Work",
+    "total_time": null
+  },
+  {
+    "id": 24,
+    "title": "Coding",
+    "total_time": 50
+  }
+]
+```
+
+### Get Single Category
+To retrieve a single category make a `get` request to `https://ilja-time-tracker.herokuapp.com/api/categories/:id`. `:id` can be the `id` of the category or the `title`. All category `id`s and `title`s are unique.
+
+> If using the `title` to retreive a category please note that it is case sensitive. `Work` is not the same as `work`.
+
+```js
+// Request
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories/4');
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories/Work');
+
+// Response
+"results": [
+  {
+    "id": 4,
+    "title": "Work"
+  }
+]
+```
+
+### Get Logs for a Category
+To retrieve the logs to a category make a `get` request to `https://ilja-time-tracker.herokuapp.com/api/categories/:id/logs`. Again, we can use the `id` or `title` of the category in the path. If a category doesn't have any logs then `null` will be returned for the values.
+
+```js
+// Request
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories/4/logs');
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories/Work/logs');
+
+// Response with no logs
+"results": [
+  {
+    "category": "Work",
+    "category_id": null,
+    "log_id": null,
+    "time": null,
+    "finished_date": null
+  }
+]
+
+// Request
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories/24/logs');
+axios.get('https://ilja-time-tracker.herokuapp.com/api/categories/Coding/logs');
+
+// Response with logs
+"results": [
+  {
+    "category": "Coding",
+    "category_id": 24,
+    "log_id": 4,
+    "time": 50,
+    "finished_date": "2022-08-24T12:00:00.000Z"
+  },
+  {
+    "category": "Coding",
+    "category_id": 24,
+    "log_id": 24,
+    "time": 13,
+    "finished_date": "2022-08-25T02:20:20.000Z"
+  }
+]
+```
+
+### Creating a Category
+To create a category make a `post` request to `https://ilja-time-tracker.herokuapp.com/api/categories`.
+
+```js
+// Syntax
+{
+  "title": "<title value>"
+}
+
+// Example
+{
+  "title": "Coding"
+}
+
+// Request
+axios.post('https://ilja-time-tracker.herokuapp.com/api/categories', {
+    title: 'Coding',
+  })
+
+// Response 
+"category has been created"
+```
+
+### Updating a Category
+To update a category make a `put` request to `https://ilja-time-tracker.herokuapp.com/api/categories`. You can use either the `id` or `title` to determine the category to update.
+
+```js
+// Syntax
+{
+  "new_title": "<title value>",
+  "id": "<id of category>", 
+  "title": "<title of category>"
+}
+
+// Example
+{
+  "new_title": "Coding",
+  "id": 24,
+  "title": "Codi",
+}
+
+// Request with id
+axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "new_title": "Coding",
+  "id": 24,
+})
+
+// Request with title
+axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "new_title": "Coding",
+  "title": "Codi",
+})
+
+// Response 
+"category has been updated"
+```
+
+### Deleting a Category
+To delete a category make a `delete` request to `https://ilja-time-tracker.herokuapp.com/api/categories`. You can use either the `id` or `title` to determine the category to delete.
+
+```js
+// Syntax
+{
+  "id": "<id of category>", 
+  "title": "<title of category>"
+}
+
+// Example
+{
+  "id": 24,
+  "title": "Coding",
+}
+
+// Request with id
+axios.delete('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "id": 24,
+})
+
+// Request with title
+axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "title": "Coding"
+})
+
+// Response 
+"category has been deleted"
+```
+
+
+### Get All Logs
+To retrieve all the logs make a `get` request to `https://ilja-time-tracker.herokuapp.com/api/logs`.
+
+```js
+// Request
+axios.get('https://ilja-time-tracker.herokuapp.com/api/logs');
+
+// Response
+"results": [
+  {
+    "id": 4,
+    "category_id": 24,
+    "time": 50,
+    "finished_date": "2022-08-24T12:00:00.000Z"
+  },
+  {
+    "id": 24,
+    "category_id": 4,
+    "time": 77,
+    "finished_date": "2022-08-24T12:56:00.000Z"
+  },
+  {
+    "id": 34,
+    "category_id": 4,
+    "time": 23,
+    "finished_date": "2022-08-25T03:05:00.000Z"
+  }
+]
+```
+
+### Get a Single Log
+To retrieve a single log make a `get` request to `https://ilja-time-tracker.herokuapp.com/api/logs/:id`. `:id` is the `id` of the log to get.
+
+```js
+// Request
+axios.get('https://ilja-time-tracker.herokuapp.com/api/logs/4');
+
+// Response
+"results": [
+  {
+    "id": 4,
+    "category_id": 24,
+    "time": 50,
+    "finished_date": "2022-08-24T12:00:00.000Z"
+  }
+]
+```
+
+### Creating a Log
+To create a log make a `post` request to `https://ilja-time-tracker.herokuapp.com/api/logs`.
+
+```js
+// Syntax
+{
+  "category_id": "<id of category log is referencing>",
+  "time": "<number>",
+  "finished_date": "<YYYY-MM-DD HH-MM-SS>",
+}
+
+// Example
+{
+  "category_id": 4,
+  "time": 23,
+  "finished_date": "2022-08-25 03:05:00"
+}
+
+// Request
+axios.post('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "category_id": 4,
+  "time": 23,
+  "finished_date": "2022-08-25 03:05:00"
+})
+
+// Response 
+"log has been created"
+```
+
+### Updating a Log
+To update a log make a `put` request to `https://ilja-time-tracker.herokuapp.com/api/logs`. You aren't required to update all the values at once. You only need to include the `id` and then the values you wish to update. The `finished_date` must be in this format `YYYY-MM-DD HH-MM-SS`.
+
+```js
+// Syntax
+{
+  "id": "<id of log to update>", 
+  "category_id": "<id of new category>",
+  "time": "<new time>",
+  "finished_date": "<new finished date>",
+}
+
+// Example
+{
+  "id": 24,
+  "category_id": 4,
+  "time": 77,
+  "finished_date": "2022-08-24 12:56:00"
+}
+
+// Request
+axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "id": 24,
+  "category_id": 4,
+  "time": 77,
+  "finished_date": "2022-08-24 12:56:00"
+})
+
+// Response 
+"log has been updated"
+```
+
+### Deleting a Log
+To delete a log make a `delete` request to `https://ilja-time-tracker.herokuapp.com/api/logs`.
+
+```js
+// Syntax
+{
+  "id": "<id of log>", 
+}
+
+// Example
+{
+  "id": 24,
+}
+
+// Request
+axios.delete('https://ilja-time-tracker.herokuapp.com/api/categories', {
+  "id": 24,
+})
+
+// Response 
+"log has been deleted"
+```
 
 ## Wireframes
 
