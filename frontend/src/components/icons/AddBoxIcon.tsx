@@ -1,4 +1,4 @@
-interface props {
+interface IProps {
   className?: string;
   height?: string;
   onClick?: Function;
@@ -7,7 +7,7 @@ interface props {
   width?: string;
 }
 
-export default function AddBoxIcon(props: props): JSX.Element {
+export default function AddBoxIcon(props: IProps): JSX.Element {
   return (
     <svg
       className={props.className || undefined}

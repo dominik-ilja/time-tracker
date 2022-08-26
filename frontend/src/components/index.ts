@@ -1,7 +1,11 @@
 import AddBoxIcon from "./icons/AddBoxIcon";
-import Spinner from "./icons/Spinner";
+import EditIcon from "./icons/EditIcon";
+import SpinnerIcon from "./icons/SpinnerIcon";
+import TrashIcon from "./icons/TrashIcon";
 
 export {
   AddBoxIcon,
-  Spinner
+  EditIcon,
+  SpinnerIcon,
+  TrashIcon
 };

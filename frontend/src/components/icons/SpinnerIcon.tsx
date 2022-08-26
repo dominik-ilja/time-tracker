@@ -7,7 +7,7 @@ interface IProps {
   spinnerColor?: string;
 }
 
-export default function Spinner(props: IProps): JSX.Element {
+export default function SpinnerIcon(props: IProps): JSX.Element {
   return (
     <div className="flex justify-center">
       <div
