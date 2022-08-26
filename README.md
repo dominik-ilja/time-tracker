@@ -190,12 +190,12 @@ To delete a category make a `delete` request to `https://ilja-time-tracker.herok
 
 // Request with id
 axios.delete('https://ilja-time-tracker.herokuapp.com/api/categories', {
-  "id": 24,
+  data: { "id": 24 }
 })
 
 // Request with title
 axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
-  "title": "Coding"
+  data: { "title": "Coding" }
 })
 
 // Response 
@@ -301,7 +301,7 @@ To update a log make a `put` request to `https://ilja-time-tracker.herokuapp.com
 }
 
 // Request
-axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
+axios.put('https://ilja-time-tracker.herokuapp.com/api/logs', {
   "id": 24,
   "category_id": 4,
   "time": 77,
@@ -327,8 +327,8 @@ To delete a log make a `delete` request to `https://ilja-time-tracker.herokuapp.
 }
 
 // Request
-axios.delete('https://ilja-time-tracker.herokuapp.com/api/categories', {
-  "id": 24,
+axios.delete('https://ilja-time-tracker.herokuapp.com/api/logs', { 
+  data: { id: 24 } 
 })
 
 // Response 
