@@ -102,7 +102,7 @@ export default function Home(): JSX.Element {
   }
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div>
       <div className="container mx-auto flex flex-col gap-y-4">
         <div className="flex flex-col gap-y-1">
           {
