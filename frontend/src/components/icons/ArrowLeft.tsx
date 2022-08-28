@@ -22,16 +22,16 @@ export default function ArrowLeft(props: IProps): JSX.Element {
       <path
         d="M26.9166 17H7.08325"
         stroke="currentcolor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M16.9999 26.9167L7.08325 17L16.9999 7.08334"
         stroke="currentcolor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
