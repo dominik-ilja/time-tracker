@@ -194,7 +194,7 @@ axios.delete('https://ilja-time-tracker.herokuapp.com/api/categories', {
 })
 
 // Request with title
-axios.put('https://ilja-time-tracker.herokuapp.com/api/categories', {
+axios.delete('https://ilja-time-tracker.herokuapp.com/api/categories', {
   data: { "title": "Coding" }
 })
 
