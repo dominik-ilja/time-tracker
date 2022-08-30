@@ -25,7 +25,8 @@ I expect creating a timer might pose a challenge. More specifically, tracking th
 
 
 ## Feature List
-1. List of the apps functionality
+1. Create categories to track your time.
+2. Create logs manually for a specific category or by submitting your time tracked by the timer.
 
 ## Entity Relationship Diagram
 ![ERD Diagram](.readme/erds/erd-categories-and-logs.png)
@@ -359,7 +360,8 @@ The log page is used for getting the various logs associated with a given catego
 ![deleting a log](.readme/wireframes/desktop-delete-log.png)
 
 ## Component Hierarchy
-1. Wireframes should be broken into components which then should be described in a component hierarchy.
+
+![component hierarchy](.readme/component_hierarchy/component_hierarchy.png)
 
 ## Dependencies
 link to any project dependencies (e.g. 3rd party APIs, libraries, linter, etc).
