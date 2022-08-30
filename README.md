@@ -364,5 +364,10 @@ The log page is used for getting the various logs associated with a given catego
 ## Dependencies
 link to any project dependencies (e.g. 3rd party APIs, libraries, linter, etc).
 
-1. Create React App
-2. Axios
+1. create react app
+2. axios
+3. tailwindcss
+4. cors
+5. dotenv
+6. express
+7. mysql
