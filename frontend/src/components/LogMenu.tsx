@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, KeyboardEvent, MouseEventHandler, SetStateAction, useState } from 'react';
+import React, { FormEvent, MouseEventHandler, useState } from 'react';
 import { Overlay } from './index';
 import { ILogFields } from '../types/interfaces';
 
