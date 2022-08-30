@@ -1,197 +1,237 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { AddBoxIcon, EditIcon, SpinnerIcon, TrashIcon } from "../components";
-import { numberToDays } from '../utils';
-
-interface ICategory {
-  id: number;
-  title: string;
-  total_time: number;
-};
+import {
+  SpinnerIcon, StatusPopup, DeleteMenu, CategoryMenu, AddBox, Category, Timer
+} from "../components";
+import { requests } from '../api';
+import { ISubmitInfo, ICategoryTime } from '../types/interfaces';
+import { formatLocalString } from '../utils';
 
 export default function Home(): JSX.Element {
-  const [categories, setCategories] = useState<ICategory[] | []>([]);
-  const [activeCategory, setActiveCategory] = useState<ICategory | null>(null);
+  const [categories, setCategories] = useState<ICategoryTime[] | []>([]);
+  const [activeCategory, setActiveCategory] = useState<ICategoryTime | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [showCreateMenu, setShowCreateMenu] = useState(false);
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
-  const [inputText, setInputText] = useState('');
+  const [showEditMenu, setShowEditMenu] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
   const [hasPosted, setHasPosted] = useState(false);
   const [newPostAvailable, setNewPostAvailable] = useState(true);
   const [postMessage, setPostMessage] = useState('');
 
-  console.log(activeCategory);
 
   useEffect(() => {
-    if (newPostAvailable) {
-      axios.get('https://ilja-time-tracker.herokuapp.com/api/categories')
-        .then((res) => {
-          setCategories(res.data.results);
-        })
-        .catch(err => console.log(err));
-      setNewPostAvailable(false);
-    }
+    async function getCategories() {
+      if (newPostAvailable) {
+        setIsLoading(true);
+        const data = await requests.getCategories();
+        data ? setCategories(data) : setCategories([]);
+        setIsLoading(false);
+        setNewPostAvailable(false);
+      }
+    };
+    getCategories();
+
   }, [newPostAvailable]);
   useEffect(() => {
     if (hasPosted) {
       setTimeout(() => setHasPosted(false), 2000);
     }
   }, [hasPosted]);
+  useEffect(() => {
+    if (showDropdown) {
+      window.addEventListener('click', () => {
 
-  function handleCreateMenuClick(state?: boolean): void {
-    state === undefined
-      ? setShowCreateMenu(prev => !prev)
-      : setShowCreateMenu(state);
-  }
-  function handleCategoryCreation(e: React.FormEvent): void {
-    e.preventDefault();
-    console.log(inputText);
-    const baseURL = 'https://ilja-time-tracker.herokuapp.com/api/';
-    axios.post(baseURL + 'categories', { title: inputText, })
-      .then(res => {
-        console.log(res);
-        setIsPosting(false);
-        setHasPosted(true);
+      });
+    }
+  }, [showDropdown]);
+
+  function handleCategoryCreation(e: React.FormEvent, title: { text: string; }) {
+    async function postCategory() {
+      setIsPosting(true);
+
+      const data = await requests.postCategory({ title: title.text });
+
+      if (data) {
         setPostMessage('Category created!');
-        setInputText('');
         setNewPostAvailable(true);
-      })
-      .catch(err => {
-        console.log(err);
-        setIsPosting(false);
-        setHasPosted(true);
+      } else {
         setPostMessage("Couldn't create category");
-      });
-    setIsPosting(true);
-  }
-  function handleDeleteMenuClick(state?: boolean, item?: ICategory): void {
-    if (state !== undefined) {
-      setShowDeleteMenu(state);
-
-      if (item !== undefined) {
-        setActiveCategory(item);
       }
+
+      setIsPosting(false);
+      setHasPosted(true);
     }
-    else {
-      setShowDeleteMenu(prev => !prev);
-    }
+    postCategory();
   }
-  function handleCategoryDeletion(item: ICategory): void {
-    const baseURL = 'https://ilja-time-tracker.herokuapp.com/api/';
+  function handleCategoryDeletion() {
+    async function deleteCategory() {
+      setIsPosting(true);
 
-    axios.delete(baseURL + 'categories', { data: { id: item.id } })
-      .then(res => {
-        console.log(res);
-        setIsPosting(false);
-        setHasPosted(true);
+      if (activeCategory) {
+        const data = await requests.deleteCategory({ data: { id: activeCategory.id } });
+        const updatedCategories = categories.filter(category => category.id !== activeCategory.id);
         setPostMessage(`Category "${activeCategory && activeCategory.title}" has been deleted.`);
+        setCategories(updatedCategories);
+        setActiveCategory(null);
         setShowDeleteMenu(false);
-        if (activeCategory) {
-          const updatedCategories = categories.filter(item => item.id !== activeCategory.id);
-          setCategories(updatedCategories);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        setIsPosting(false);
-        setHasPosted(true);
+      }
+      else {
         setPostMessage("Couldn't delete category");
-      });
+      }
 
-    setIsPosting(true);
+      setIsPosting(false);
+      setHasPosted(true);
+    }
+    deleteCategory();
+  }
+  function handleCategoryEdit(e: React.FormEvent, title: { text: string; }) {
+    async function updateCategory() {
+      setIsPosting(true);
+
+      if (activeCategory) {
+        const data = await requests.updateCategory({ new_title: title.text, id: activeCategory.id });
+
+        if (data) {
+          setPostMessage('Category updated!');
+          setNewPostAvailable(true);
+        } else {
+          setPostMessage("Couldn't update category");
+        }
+      }
+
+      setIsPosting(false);
+      setHasPosted(true);
+    }
+    updateCategory();
+  }
+  function handleTimerSubmit(e: React.MouseEvent, info: ISubmitInfo) {
+    async function createLog() {
+      setIsPosting(true);
+
+      if (activeCategory) {
+        const time = Math.round(info.seconds / 60);
+
+        if (time > 0) {
+          const finished_date = formatLocalString(info.submitTime.toLocaleString());
+          const data = await requests.postLog({
+            category_id: activeCategory.id,
+            finished_date,
+            time
+          });
+
+          if (data) {
+            setPostMessage('Log created!');
+            setNewPostAvailable(true);
+          } else {
+            setPostMessage("Couldn't create log");
+          }
+        }
+        else {
+          setPostMessage('Log has to be at least a minute');
+        }
+      }
+      else {
+        setPostMessage("Select a Category");
+      }
+
+      setIsPosting(false);
+      setHasPosted(true);
+    }
+    createLog();
   }
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      <div className="container mx-auto flex flex-col gap-y-4">
+    <div className="pt-4">
+      <div className="container flex flex-col mx-auto gap-y-4">
+        <div>
+          <div className="relative flex justify-center py-2">
+            <button onClick={() => setShowDropdown(prev => !prev)}
+              className="text-center">
+              {activeCategory?.title || categories[0]?.title || 'Select Category'}
+            </button>
+            {
+              showDropdown && (
+                <div className="absolute top-full bg-gray-500 w-full max-w-md flex flex-col items-center">
+                  {
+                    isLoading ? <SpinnerIcon className="border-gray-800 border-t-pink-600" />
+                      : categories.map(category => (
+                        <button
+                          onClick={() => {
+                            setActiveCategory(category);
+                            setShowDropdown(false);
+                          }}
+                          className="w-full hover:bg-slate-800 py-4"
+                        >
+                          {category.title}
+                        </button>
+                      ))
+                  }
+                </div>
+              )
+            }
+          </div>
+          <Timer submitHandler={handleTimerSubmit} />
+        </div>
         <div className="flex flex-col gap-y-1">
           {
-            categories.map((category, index) => (
-              <div className="flex items-center justify-between bg-[#5E2CCA] pr-2">
-                <div className="bg-[#541FC5] w-32 text-center p-3 font-semibold">{category.title}</div>
-                <div>{category.total_time && numberToDays(category.total_time)}</div>
-                <div className="text-[#AA83FC] flex gap-x-2">
-                  <button>
-                    <EditIcon />
-                  </button>
-                  <button>
-                    <TrashIcon onClick={() => handleDeleteMenuClick(true, category)} />
-                  </button>
-                </div>
-              </div>
-            ))
+            isLoading ? <SpinnerIcon className="border-gray-800 border-t-pink-600" />
+              : categories.map(category => (
+                <Category
+                  category={category}
+                  handleDeleteClick={() => {
+                    setActiveCategory(category);
+                    setShowDeleteMenu(true);
+                  }}
+                  handleEditClick={() => {
+                    setActiveCategory(category);
+                    setShowEditMenu(true);
+                  }}
+                  key={category.title + category.id}
+                />
+              ))
           }
         </div>
-        <div className="flex justify-center">
-          <AddBoxIcon
-            className="cursor-pointer text-white"
-            onClick={() => handleCreateMenuClick(true)}
-          />
-        </div>
+        <AddBox onClick={() => setShowCreateMenu(true)} />
       </div>
 
       {
         showCreateMenu && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-            <div onClick={() => handleCreateMenuClick(false)}
-              className="bg-gray-500 opacity-60 w-full h-full absolute -z-[1]" />
-
-            {/* creation form */}
-            <form onSubmit={handleCategoryCreation} className="bg-gray-600 p-6 max-w-xs min-w-[300px] flex flex-col gap-y-4">
-              <div className="flex flex-col gap-y-2">
-                <label className="text-gray-400" htmlFor="category-title">Category Title</label>
-                <input onChange={e => setInputText(e.target.value)} value={inputText} className="w-full text-black" type="text" name="name" id="category-title" />
-              </div>
-              <div className="flex gap-x-2">
-                <button className="w-full bg-blue-600 font-semibold p-2.5">Create</button>
-                <button
-                  onClick={() => handleCreateMenuClick(false)}
-                  className="w-full bg-pink-600 font-semibold p-2.5"
-                >Cancel</button>
-              </div>
-            </form>
-          </div>
+          <CategoryMenu
+            closeListener={() => setShowCreateMenu(false)}
+            submitListener={handleCategoryCreation}
+            resetOnSubmit={true}
+          />
         )
       }
       {
-        showDeleteMenu && (
-          <div className="fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center">
-            <div onClick={() => handleDeleteMenuClick(false)}
-              className="bg-gray-500 opacity-60 w-full h-full absolute -z-[1]" />
-
-            {/* creation form */}
-            <div className="bg-gray-600 p-6 max-w-xs min-w-[300px] flex flex-col gap-y-4">
-              <p className="text-center">
-                Deleting removes the category
-                and it's related data. Would you like to delete the "{activeCategory?.title}" category?
-              </p>
-              <div className="flex gap-x-2">
-                <button onClick={() => activeCategory && handleCategoryDeletion(activeCategory)}
-                  className="w-full bg-pink-600 font-semibold p-2.5">Yes</button>
-                <button
-                  onClick={() => handleDeleteMenuClick(false)}
-                  className="w-full border-white border-2 font-semibold p-2.5"
-                >No</button>
-              </div>
-            </div>
-          </div>
+        showDeleteMenu && activeCategory && (
+          <DeleteMenu
+            closeListener={() => setShowDeleteMenu(false)}
+            deleteListener={() => handleCategoryDeletion()}
+            text={`Deleting removes the category and it's related data. Would you like to delete the 
+                  "${activeCategory.title}" category?`}
+          />
+        )
+      }
+      {
+        showEditMenu && activeCategory && (
+          <CategoryMenu
+            closeListener={() => setShowEditMenu(false)}
+            submitListener={handleCategoryEdit}
+            resetOnSubmit={true}
+            submitButtonText='Update'
+          />
         )
       }
       {
         isPosting && (
-          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 p-4 bg-gray-50 text-black font-semibold flex gap-x-2 min-w-[200px] min-h-[78px] justify-center items-center">
+          <StatusPopup>
             <SpinnerIcon className="border-gray-800 border-t-pink-600" />
-          </div>
+          </StatusPopup>
         )
       }
-      {
-        hasPosted && (
-          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 p-4 bg-gray-50 text-black font-semibold min-w-[200px] min-h-[78px] flex justify-center items-center">
-
-            {postMessage}
-          </div>
-        )
-      }
+      {hasPosted && <StatusPopup>{postMessage}</StatusPopup>}
     </div>
   );
 }
