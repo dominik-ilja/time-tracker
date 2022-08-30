@@ -11,13 +11,11 @@ export default function TrashIcon(props: IProps): JSX.Element {
   // stroke #7A7A7A
   return (
     <svg
-      className={props.className || undefined}
+      className={`h-full w-full` + `${props.className || ''}`}
       fill="none"
-      height={props.height || props.size || "24"}
       onClick={props.onClick ? (e) => props.onClick?.(e) : undefined}
       stroke={props.stroke || 'currentcolor'}
       viewBox="0 0 25 24"
-      width={props.width || props.size || "25"}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

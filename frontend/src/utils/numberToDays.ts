@@ -2,7 +2,6 @@ import { capitalize } from './index';
 
 type Format = 'short' | 'long';
 type Case = 'uppercase' | 'lowercase' | 'capitalize';
-type Name = 'names';
 
 interface IOptions {
   format: Format;
@@ -102,19 +101,5 @@ export default function numberToDays(num: number, options: IOptions = { format: 
 
   }
 
-  // for (const time of times) {
-  //   const { time_in_minutes, names } = time;
-  //   const val = Math.floor(remainder / time_in_minutes);
-  //   remainder %= time_in_minutes;
-
-  //   if (val === 1) {
-  //     result += `${ val; } ${ capitalize(names.singular); } `;
-  //   }
-  //   else if (val > 1) {
-  //     result += `${ val; } ${ capitalize(names.plural); } `;
-  //   }
-
-  // }
-
   return result;
-};;;;;
+};
