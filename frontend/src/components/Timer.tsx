@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ISubmitInfo } from '../types/interfaces';
 
 interface IProps {
@@ -20,7 +20,7 @@ export default function Timer(props: IProps) {
 
   function formatTimer() {
     const times = [3600, 60, 1];
-    const maxTime = 359_999;
+    // const maxTime = 359_999;
     let remainder = seconds;
     let result = '';
 
