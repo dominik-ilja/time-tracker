@@ -113,7 +113,7 @@ export default function Home(): JSX.Element {
         const time = Math.round(info.seconds / 60);
 
         if (time > 0) {
-          const finished_date = formatLocalString(info.submitTime.toLocaleString());
+          const finished_date = formatLocalString(info.submitTime);
           const data = await requests.postLog({
             category_id: activeCategory.id,
             finished_date,
@@ -231,7 +231,9 @@ export default function Home(): JSX.Element {
           </StatusPopup>
         )
       }
-      {hasPosted && <StatusPopup>{postMessage}</StatusPopup>}
+      {
+        hasPosted && <StatusPopup>{postMessage}</StatusPopup>
+      }
     </div>
   );
 }
