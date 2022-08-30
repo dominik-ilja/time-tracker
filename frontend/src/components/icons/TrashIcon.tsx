@@ -11,7 +11,7 @@ export default function TrashIcon(props: IProps): JSX.Element {
   // stroke #7A7A7A
   return (
     <svg
-      className={`h-full w-full` + `${props.className || ''}`}
+      className={`h-full w-full ${props.className || ''}`}
       fill="none"
       onClick={props.onClick ? (e) => props.onClick?.(e) : undefined}
       stroke={props.stroke || 'currentcolor'}

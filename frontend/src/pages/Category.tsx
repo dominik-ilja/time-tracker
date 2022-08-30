@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-  SpinnerIcon, ArrowLeft, EditIcon, TrashIcon, AddBoxIcon, StatusPopup, DeleteMenu,
-  Log, AddBox, LogMenu
-} from '../components';
+import { SpinnerIcon, ArrowLeft, StatusPopup, DeleteMenu, Log, AddBox, LogMenu } from '../components';
 import { ICategory, ILog, ILogFields } from '../types/interfaces';
-import { dummyData, constants } from "../api";
-import { requests } from '../api';
+import { constants, requests } from "../api";
 
 export default function Category(): JSX.Element {
   const [category, setCategory] = useState<ICategory | null>(null);

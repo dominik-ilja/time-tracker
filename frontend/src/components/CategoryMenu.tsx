@@ -1,4 +1,4 @@
-import React, { FormEvent, FormEventHandler, MouseEventHandler, useState } from 'react';
+import { FormEvent, MouseEventHandler, useState } from 'react';
 import { Overlay } from './index';
 
 interface IProps {

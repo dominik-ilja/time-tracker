@@ -112,14 +112,14 @@ const getLogById = (req, res) => {
   });
 };
 const updateLogById = (req, res) => {
-  const { category_id, finished_date, time, id } = req.body;
+  const { finished_date, time, id } = req.body;
   const conditions = [];
   const values = [];
 
-  if (category_id !== undefined) {
-    conditions.push('category_id = ?');
-    values.push(category_id);
-  }
+  // if (category_id !== undefined) {
+  //   conditions.push('category_id = ?');
+  //   values.push(category_id);
+  // }
   if (finished_date !== undefined) {
     conditions.push('finished_date = ?');
     values.push(finished_date);

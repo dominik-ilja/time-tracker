@@ -69,7 +69,7 @@ export default function Home(): JSX.Element {
       setIsPosting(true);
 
       if (activeCategory) {
-        const data = await requests.deleteCategory({ data: { id: activeCategory.id } });
+        await requests.deleteCategory({ data: { id: activeCategory.id } });
         const updatedCategories = categories.filter(category => category.id !== activeCategory.id);
         setPostMessage(`Category "${activeCategory && activeCategory.title}" has been deleted.`);
         setCategories(updatedCategories);
