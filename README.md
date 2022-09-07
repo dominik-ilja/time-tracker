@@ -1,5 +1,8 @@
 # Time Tracker
 
+## Live Site
+https://timer-tracker-ilja.netlify.app/
+
 ## Description
 
 Time Tracker is an application that allows you to track and visualize how much time you've spent. You create categories and then select a category to put time into. You run the timer and hit complete when you don't want to track time anymore. Your time is then updated with the appropriate category. Your total time for each category is then displayed on the homepage. You can add or delete entries simply by clicking into a category. This page will allow you to create, update, or delete entries.
